@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -22,11 +23,10 @@ import java.io.Serializable;
 @Setter
 @Table(name = "user")
 public class UserModel implements Serializable {
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    private String id;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @NotNull
     @Size(max = 50)
@@ -37,11 +37,6 @@ public class UserModel implements Serializable {
     @Size(max = 50)
     @Column(name = "nama", nullable = false)
     private String nama;
-
-    @NotNull
-    @Size(max = 50)
-    @Column(name = "tanggal_lahir", nullable = false)
-    private String tanggal_lahir;
 
     @NotNull
     @Size(max = 50)
@@ -62,7 +57,12 @@ public class UserModel implements Serializable {
     @Column(name = "foto")
     private byte[] foto;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "divisi_id")
+    private Divisi divisi;
+
+
+    @ManyToOne(fetch = FetchType.EAGER) // TODO: ganti jadi enum
     @JoinColumn(name = "id_role", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Role role;
