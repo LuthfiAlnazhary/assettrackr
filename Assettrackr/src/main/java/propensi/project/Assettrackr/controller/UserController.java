@@ -1,16 +1,47 @@
 package propensi.project.Assettrackr.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import propensi.project.Assettrackr.model.dto.CreateRequest;
+import propensi.project.Assettrackr.model.dto.ListUserResponse;
+import propensi.project.Assettrackr.model.dto.LoginRequest;
+import propensi.project.Assettrackr.model.dto.UserResponse;
 import propensi.project.Assettrackr.service.UserService;
 
-@Controller
+@RestController
+@RequestMapping("/api/v1/user")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
-    @Qualifier("userServiceImpl")
 
     @Autowired
-    private UserService userService;
+    private UserService service;
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(LoginRequest request){
+        try {
+            String jwt = service.login(request);
+            return ResponseEntity.ok(jwt);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ListUserResponse> getAll(){
+        ListUserResponse response = service.getAllUser();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getDetail(@PathVariable("id") String id){
+        try {
+            UserResponse response= service.getDetailUser(id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
 //    @GetMapping(value = "/manager/viewall")
 //    public String listManager(Model model) {

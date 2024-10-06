@@ -31,4 +31,7 @@ public class Divisi {
     @OneToMany(mappedBy = "divisi", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Server> listServer;
 
+    @OneToMany(mappedBy = "divisi", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserModel> listUser;
+
 }
