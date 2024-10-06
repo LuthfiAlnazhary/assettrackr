@@ -44,7 +44,32 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SecurityOfficerRepository securityOfficerRepository;
 
+    @Override
+    public String createUser(CreateRequest request) throws RuntimeException {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()){
+            throw new RuntimeException("Username sudah terdaftar");
+        } else if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email sudah terdaftar");
+        }
 
+        Optional<Divisi> divisiOpt = divisiRepository.findByNama(request.getDivisi());
+        if (divisiOpt.isEmpty()){
+            throw new RuntimeException("Divisi tidak tersedia");
+        }
+
+        Divisi divisi = divisiOpt.get();
+
+        String password = randomPass();
+
+        userRepository.save(UserModel.builder()
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .divisi(divisi)
+                .role(Role.valueOf(request.getRole()))
+                .password(encrypt(password))
+                .build());
+        return password;
+    }
     @Override
     public String login(LoginRequest request) throws RuntimeException{
         Optional<UserModel> userOpt = userRepository.findByUsername(request.getUsername());
