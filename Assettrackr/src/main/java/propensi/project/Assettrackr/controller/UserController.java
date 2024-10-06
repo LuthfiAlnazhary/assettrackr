@@ -17,6 +17,15 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    @PostMapping("/create")
+    public ResponseEntity<String> createUser(CreateRequest request){
+        try {
+            String password = service.createUser(request);
+            return ResponseEntity.ok(password);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @PostMapping("/login")
     public ResponseEntity<String> login(LoginRequest request){
         try {

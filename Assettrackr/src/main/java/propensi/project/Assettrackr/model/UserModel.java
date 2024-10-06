@@ -21,7 +21,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "user_model")
 public class UserModel implements Serializable {
 
     @Id
@@ -62,9 +62,9 @@ public class UserModel implements Serializable {
     private Divisi divisi;
 
 
-    @ManyToOne(fetch = FetchType.EAGER) // TODO: ganti jadi enum
-    @JoinColumn(name = "id_role", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @NotNull
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 
